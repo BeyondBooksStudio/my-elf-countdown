@@ -1,1 +1,1 @@
-export { UNAUTHED_ERR_MSG } from "@shared/const";
+export const UNAUTHED_ERR_MSG = 'Please sign in (10001)';
