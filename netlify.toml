@@ -1,0 +1,44 @@
+[build]
+  command = "pnpm build"
+  publish = "dist/public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22.23.4"
+  PNPM_VERSION = "10.18.0"
+  PNPM_FLAGS = "--frozen-lockfile"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["express", "postgres", "serverless-http"]
+
+# Force API calls through the function, including the runtime config script.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
+
+# Only website navigation falls back to the SPA; static files take precedence.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "private, no-store"
+    X-Content-Type-Options = "nosniff"
